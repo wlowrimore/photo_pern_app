@@ -68,10 +68,21 @@ app.post('/photos', async (req, res) => {
 
 // Update a photo
 
-app.put('/photos/:id', (req, res) => {
-  res.status(200).json({
-    status: 'success'
-  })
+app.put('/photos/:id', async (req, res) => {
+  try {
+    const results = await db.query('UPDATE photo SET title = $1, description = $2 WHERE photo_id = $3 RETURNING *', [
+      req.body.title, req.body.description, req.params.id] )
+      console.log(req.body);
+      res.status(200).json({
+        status: 'success',
+        results: results.rows.length,
+        data: {
+          photo: results.rows[0],
+        }
+      })
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // Delete a photo
