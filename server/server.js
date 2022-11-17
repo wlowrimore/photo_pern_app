@@ -14,31 +14,56 @@ app.use(express.json());
 // Get all photos
 
 app.get('/photos', async (req, res) => {
-
-  const results = await db.query('SELECT * FROM photo')
-  console.log(results);
-  res.status(200).json({
-    status: "success",
-    data: {
-      photo: ["Will", "Nikki", "Tripp", "Maya", "Joel 'the vat'"],
-    }
-  })
+  try {
+    const results = await db.query('SELECT * FROM photo')
+    console.log(results);
+    res.status(200).json({
+      status: "success",
+      results: results.rows.length,
+      data: {
+        photo: results.rows,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // Get photo by id
 
-app.get('/photos/:id', (req, res) => {
-  res.status(200).json({
-    status: 'success'
-  })
+app.get('/photos/:id', async (req, res) => {
+  try {
+    const results = await db.query('SELECT * FROM photo WHERE photo_id = $1', [req.params.id]);
+    console.log(req.body);
+    res.status(200).json({
+      status: 'success',
+      results: results.rows.length,
+      data: {
+        photo: results.rows[0],
+      },
+    });
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // Create a photo
 
-app.post('/photos', (req, res) => {
-  res.status(200).json({
-    status: 'success'
-  })
+app.post('/photos', async (req, res) => {
+  try {
+    const results = await db.query('INSERT INTO photo (title, description) values ($1, $2) RETURNING *', [
+      req.body.title, req.body.description] )
+    console.log(req.body);
+    res.status(200).json({
+      status: 'success',
+      results: results.rows.length,
+      data: {
+        photo: results.rows[0],
+      },
+    });    
+  } catch (err) {
+    console.log(err);
+  }
 });
 
 // Update a photo
