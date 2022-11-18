@@ -1,10 +1,12 @@
 require('dotenv').config()
 const express = require('express');
+const cors = require('cors');
 const db = require('./db');
 
 const app = express();
 
 // middleware
+app.use(cors());
 app.use(express.json());
 
 
@@ -16,7 +18,6 @@ app.use(express.json());
 app.get('/photos', async (req, res) => {
   try {
     const results = await db.query('SELECT * FROM photo')
-    console.log(results);
     res.status(200).json({
       status: "success",
       results: results.rows.length,
@@ -34,7 +35,6 @@ app.get('/photos', async (req, res) => {
 app.get('/photos/:id', async (req, res) => {
   try {
     const results = await db.query('SELECT * FROM photo WHERE photo_id = $1', [req.params.id]);
-    console.log(req.body);
     res.status(200).json({
       status: 'success',
       results: results.rows.length,
@@ -53,8 +53,7 @@ app.post('/photos', async (req, res) => {
   try {
     const results = await db.query('INSERT INTO photo (title, description) values ($1, $2) RETURNING *', [
       req.body.title, req.body.description] )
-    console.log(req.body);
-    res.status(200).json({
+      res.status(200).json({
       status: 'success',
       results: results.rows.length,
       data: {
@@ -72,7 +71,6 @@ app.put('/photos/:id', async (req, res) => {
   try {
     const results = await db.query('UPDATE photo SET title = $1, description = $2 WHERE photo_id = $3 RETURNING *', [
       req.body.title, req.body.description, req.params.id] )
-      console.log(req.body);
       res.status(200).json({
         status: 'success',
         results: results.rows.length,

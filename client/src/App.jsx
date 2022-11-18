@@ -1,12 +1,17 @@
 import React from 'react'
-import InputPhoto from './components/InputPhoto'
+import { PhotosContextProvider } from './context/PhotosContext'
+import HomePage from './pages/HomePage'
+import ListPhotosPage from './pages/ListPhotosPage'
 
 const App = () => {
   return (
-    <div className='container text-center mx-auto mt-5 p-6 bg-indigo-100'>
-      <h1 className='text-5xl text-center text-gray-500 font-thin'>Photophile</h1>
-      <InputPhoto />
-    </div>
+    <PhotosContextProvider>
+      <div className='container text-center mx-auto mt-5 p-6 bg-indigo-100'>
+        <h1 className='text-6xl text-center text-gray-600 font-thin'>Photophile</h1>
+        <HomePage />
+        <ListPhotosPage />
+      </div>
+    </PhotosContextProvider>
   )
 }
 
