@@ -89,11 +89,8 @@ app.put('/photos/:id', async (req, res) => {
 
 app.delete('/photo/:id', async (req, res) => {
   try {
-    const results = await db.query('DELETE FROM photo WHERE photo_id = $1', [req.params.id] )
-    console.log(req.body);
-    res.status(200).json({
-      status: 'success',
-    });
+    const results = await db.query('DELETE FROM photo WHERE photo_id = $1', [req.params.id]);
+    res.status(200).json('Entry was successfully deleted!');
   } catch (err) {
     console.log(err);
   }
