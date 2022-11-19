@@ -1,20 +1,22 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useContext, useState } from 'react'
+import { PhotosContext } from '../context/PhotosContext';
+import Photophile from '../api/Photophile';
 import ImageUploader from '../features/ImageUploader'
 
 const HomePage = () => {
+  const { addNewPhoto } = useContext(PhotosContext);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
-  const onSubmitForm = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const body = [{ title, description }];
-      const response = await fetch('http://localhost:4000/photos', {
-        method: "POST",
-        headers: { 'Content-Type': 'applicaction/json'},
-        body: JSON.stringify(body)
-      } )
+      const response = await Photophile.post('/', {
+        title,
+        description
+      });
+      addNewPhoto(response.data.data.photo)
     } catch (err) {
       console.log(err);
     }
@@ -42,7 +44,8 @@ const HomePage = () => {
           <ImageUploader />
           <button 
             className='w-full bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 rounded'
-            onClick={onSubmitForm}>
+            type='submit'
+            onClick={handleSubmit}>
             Add
           </button>
       </div>

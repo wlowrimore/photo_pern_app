@@ -1,9 +1,9 @@
 import React, { Fragment, useEffect, useContext } from 'react'
-import Photophile from '../api/Photophile'
 import { PhotosContext } from '../context/PhotosContext';
+import Photophile from '../api/Photophile'
 
 const ListPhotosPage = (props) => {
-  const {photo, setPhoto} = useContext(PhotosContext)
+  const {photos, setPhoto} = useContext(PhotosContext)
   useEffect(() => {
     async function fetchData() {
       // You can await here
@@ -12,11 +12,22 @@ const ListPhotosPage = (props) => {
    }
     fetchData();
   }, []);
+
+  const handleDelete = async (id) => {
+    try {
+      const response = await Photophile.delete(`/${id}`);
+      setPhoto(photos.filter(photo => {
+        return photos.photo_id !== id
+      }))
+    } catch (err) {
+      console.log(err);
+    }
+  };
     
 
   return (
     <Fragment>
-      <div className="flex flex-col">
+      <div className="flex flex-col py-8">
         <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
           <div className="py-4 inline-block min-w-full sm:px-6 lg:px-8">
             <div className="overflow-hidden rounded shadow-md">
@@ -38,39 +49,30 @@ const ListPhotosPage = (props) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* <tr className="bg-white border-b">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
-                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                      Mark
-                    </td>
-                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                      Otto
-                    </td>
-                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                      @mdo
-                    </td>
-                  </tr>
-                  <tr className="bg-white border-b">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2</td>
-                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                      Jacob
-                    </td>
-                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                      Thornton
-                    </td>
-                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                      @fat
-                    </td>
-                  </tr>
-                  <tr className="bg-white border-b">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">3</td>
-                    <td colspan="2" className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap text-center">
-                      Larry the Bird
-                    </td>
-                    <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                      @twitter
-                    </td>
-                  </tr> */}
+                  {photos && photos.map(photo => {
+                    return (
+                      <tr key={photo.photo_id} className='bg-white border-b'>
+                        <td className="text-start text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {photo.title}
+                        </td>
+                        <td className="text-start text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          {photo.description}
+                        </td>
+                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          <button className='w-full bg-green-500 hover:bg-green-400 text-white hover:text-gray-900 font-bold py-2 px-4 rounded'>
+                            Edit
+                          </button>
+                        </td>
+                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+                          <button 
+                            onClick={() => handleDelete(photo.photo_id)}
+                            className='w-full bg-red-500 hover:bg-red-400 text-white hover:text-gray-900 font-bold py-2 px-4 rounded'>
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
               </table>
             </div>

@@ -81,20 +81,21 @@ app.put('/photos/:id', async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+  console.log(res);
 });
 
 // Delete a photo
 
-app.delete('/photo/:id', async (req, res) => {
+app.delete('/photos/:id', async (req, res) => {
   try {
     const results = await db.query('DELETE FROM photo WHERE photo_id = $1', [req.params.id]);
-    res.status(200).json('Entry was successfully deleted!');
+    res.status(200).json({
+      status: 'success',
+    });
   } catch (err) {
     console.log(err);
   }
 });
-
-
 
 
 
