@@ -1,10 +1,12 @@
-import React, { Fragment, useEffect, useContext } from 'react'
+import React, { Fragment, useEffect, useState, useContext } from 'react'
 import { PhotosContext } from '../context/PhotosContext';
 import Photophile from '../api/Photophile'
-import EditPhotoPage from './EditPhotoPage';
+import EditPhotoModal from './EditPhotoModal';
 
 const ListPhotosPage = (props) => {
   const {photos, setPhoto} = useContext(PhotosContext)
+  const [open, setOpen] = useState(false);
+
   useEffect(() => {
     async function fetchData() {
       // You can await here
@@ -22,8 +24,11 @@ const ListPhotosPage = (props) => {
     } catch (err) {
       console.log(err);
     }
+  };  
+
+  const toggleOpen = () => {
+    setOpen(current => !current);
   };
-    
 
   return (
     <Fragment>
@@ -58,8 +63,13 @@ const ListPhotosPage = (props) => {
                         <td className="text-start text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                           {photo.description}
                         </td>
-                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"></td>
-                          
+                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
+
+                          <button onClick={toggleOpen}>edit</button>
+                            { open && 
+                              <EditPhotoModal open={open} close={() => setOpen(false)} /> }
+                        </td>
+                                                 
                         
                         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                           <button 
