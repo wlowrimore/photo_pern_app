@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useContext } from 'react'
 import { PhotosContext } from '../context/PhotosContext';
 import Photophile from '../api/Photophile'
+import EditPhotoPage from './EditPhotoPage';
 
 const ListPhotosPage = (props) => {
   const {photos, setPhoto} = useContext(PhotosContext)
@@ -16,9 +17,8 @@ const ListPhotosPage = (props) => {
   const handleDelete = async (id) => {
     try {
       const response = await Photophile.delete(`/${id}`);
-      setPhoto(photos.filter(photo => {
-        return photos.photo_id !== id
-      }))
+      setPhoto(photos.filter(photo => photo.photo_id !== id))
+      console.log(response);
     } catch (err) {
       console.log(err);
     }
@@ -58,11 +58,9 @@ const ListPhotosPage = (props) => {
                         <td className="text-start text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                           {photo.description}
                         </td>
-                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
-                          <button className='w-full bg-green-500 hover:bg-green-400 text-white hover:text-gray-900 font-bold py-2 px-4 rounded'>
-                            Edit
-                          </button>
-                        </td>
+                        <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap"></td>
+                          
+                        
                         <td className="text-sm text-gray-900 font-light px-6 py-4 whitespace-nowrap">
                           <button 
                             onClick={() => handleDelete(photo.photo_id)}
